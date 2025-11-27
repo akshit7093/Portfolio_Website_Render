@@ -270,9 +270,12 @@ const Desktop: React.FC<DesktopProps> = (props) => {
 
 const styles: StyleSheetCSS = {
     desktop: {
-        minHeight: '100%',
+        height: '100%',
+        width: '100%',
         flex: 1,
         backgroundColor: Colors.turquoise,
+        position: 'relative', // Ensure absolute children position correctly
+        overflow: 'hidden',
     },
     shutdown: {
         minHeight: '100%',

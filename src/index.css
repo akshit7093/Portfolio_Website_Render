@@ -7,8 +7,23 @@ body {
     /* -moz-osx-font-smoothing: grayscale; */
 }
 
-html, body {
+html,
+body {
     background-color: #fff;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    /* Prevent scrolling on the body */
+}
+
+#root {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 code {
@@ -280,15 +295,19 @@ input:active {
     0% {
         content: '';
     }
+
     25% {
         content: '.';
     }
+
     50% {
         content: '..';
     }
+
     75% {
         content: '...';
     }
+
     100% {
         content: '';
     }
@@ -299,10 +318,12 @@ input:active {
         opacity: 0;
         transform: scale(1, 0);
     }
+
     50% {
         opacity: 1;
         transform: scale(1, 1);
     }
+
     to {
         transform: scale(1, 1);
     }
@@ -314,18 +335,16 @@ input:active {
 }
 
 .rainbow-wrapper {
-    background: linear-gradient(
-        124deg,
-        #ff2400,
-        #e81d1d,
-        #e8b71d,
-        #e3e81d,
-        #1de840,
-        #1ddde8,
-        #2b1de8,
-        #dd00f3,
-        #dd00f3
-    );
+    background: linear-gradient(124deg,
+            #ff2400,
+            #e81d1d,
+            #e8b71d,
+            #e3e81d,
+            #1de840,
+            #1ddde8,
+            #2b1de8,
+            #dd00f3,
+            #dd00f3);
     background-size: 1800% 1800%;
 
     -webkit-animation: rainbow 18s ease infinite;
@@ -338,42 +357,53 @@ input:active {
     0% {
         background-position: 0% 82%;
     }
+
     50% {
         background-position: 100% 19%;
     }
+
     100% {
         background-position: 0% 82%;
     }
 }
+
 @-moz-keyframes rainbow {
     0% {
         background-position: 0% 82%;
     }
+
     50% {
         background-position: 100% 19%;
     }
+
     100% {
         background-position: 0% 82%;
     }
 }
+
 @-o-keyframes rainbow {
     0% {
         background-position: 0% 82%;
     }
+
     50% {
         background-position: 100% 19%;
     }
+
     100% {
         background-position: 0% 82%;
     }
 }
+
 @keyframes rainbow {
     0% {
         background-position: 0% 82%;
     }
+
     50% {
         background-position: 100% 19%;
     }
+
     100% {
         background-position: 0% 82%;
     }
@@ -388,11 +418,11 @@ input:active {
 }
 
 .notyf-announcer {
-    opacity: 0!important;
+    opacity: 0 !important;
 }
 
 .notyf {
-    opacity: 0!important;
+    opacity: 0 !important;
 }
 
 .start-menu-option:hover {
@@ -405,10 +435,43 @@ input:active {
 @media (max-width: 768px) {
     .os-window {
         width: 100% !important;
-        height: calc(100% - 48px) !important; /* Leave space for toolbar (40px + padding) */
+        height: calc(100% - 48px) !important;
+        /* Leave space for toolbar */
         top: 0 !important;
         left: 0 !important;
         border-radius: 0 !important;
-        transform: none !important; /* Disable drag transform */
+        transform: none !important;
+        /* Disable drag transform */
+    }
+
+    .site-page-content {
+        margin-left: 0 !important;
+        /* Remove sidebar margin */
+        padding: 16px !important;
+        /* Reduce padding */
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .site-page {
+        position: relative !important;
+        /* Allow natural flow */
+        height: 100%;
+        width: 100%;
+    }
+
+    /* Adjust typography for mobile */
+    h1 {
+        font-size: 32px !important;
+    }
+
+    h2 {
+        font-size: 24px !important;
+    }
+
+    /* Ensure images fit */
+    .captioned-image img {
+        max-width: 100%;
+        height: auto;
     }
 }
