@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Link } from '../general';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-export interface VerticalNavbarProps {}
+export interface VerticalNavbarProps {
+    isOpen?: boolean;
+    onClose?: () => void;
+}
 
-const VerticalNavbar: React.FC<VerticalNavbarProps> = (props) => {
+const VerticalNavbar: React.FC<VerticalNavbarProps> = ({ isOpen = true, onClose }) => {
     const location = useLocation();
     const [projectsExpanded, setProjectsExpanded] = useState(false);
     const [isHome, setIsHome] = useState(false);
@@ -25,11 +28,21 @@ const VerticalNavbar: React.FC<VerticalNavbarProps> = (props) => {
         } else {
             setIsHome(false);
         }
-        return () => {};
+        return () => { };
     }, [location.pathname]);
 
-    return !isHome ? (
-        <div style={styles.navbar}>
+    return !isHome && isOpen ? (
+        <div className="vertical-navbar" style={styles.navbar}>
+            {/* Close button for mobile */}
+            {window.innerWidth <= 768 && onClose && (
+                <button
+                    onClick={onClose}
+                    style={styles.closeButton}
+                    aria-label="Close navigation"
+                >
+                    ×
+                </button>
+            )}
             <div style={styles.header}>
                 <h1 style={styles.headerText}>Akshit</h1>
                 <h1 style={styles.headerText}>Sharma</h1>
@@ -142,6 +155,17 @@ const styles: StyleSheetCSS = {
     forHireContainer: {
         cursor: 'pointer',
         width: '100%',
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        fontSize: 32,
+        background: 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+        color: '#333',
+        zIndex: 10001,
     },
 };
 

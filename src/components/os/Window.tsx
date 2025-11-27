@@ -246,16 +246,26 @@ const Window: React.FC<WindowProps> = (props) => {
         lastClickInside.current = true;
     };
 
+    // Detect mobile device
+    const isMobile = window.innerWidth <= 768;
+    const mobileStyles = isMobile ? {
+        width: '100vw',
+        height: 'calc(100vh - 32px)',
+        top: 0,
+        left: 0,
+        position: 'fixed' as const,
+    } : {
+        width,
+        height,
+        top,
+        left,
+    };
+
     return (
         <div onMouseDown={onWindowInteract} style={styles.container}>
             <div
                 className="os-window"
-                style={Object.assign({}, styles.window, {
-                    width,
-                    height,
-                    top,
-                    left,
-                })}
+                style={Object.assign({}, styles.window, mobileStyles)}
                 ref={windowRef}
             >
                 <div style={styles.windowBorderOuter}>

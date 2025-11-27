@@ -9,12 +9,8 @@ const ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://12
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const compression = require('compression');
 
 const app = express();
-
-// Enable Gzip compression
-app.use(compression());
 
 // Security Middleware
 app.use(helmet({

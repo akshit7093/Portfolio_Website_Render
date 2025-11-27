@@ -156,8 +156,6 @@ const ShutdownSequence: React.FC<ShutdownSequenceProps> = ({
 
     const SHUTDOWN_MAP = [
         NORMAL_SHUTDOWN,
-        NORMAL_SHUTDOWN,
-        NORMAL_SHUTDOWN,
         SHUTDOWN_3,
         SHUTDOWN_4,
         SHUTDOWN_5,

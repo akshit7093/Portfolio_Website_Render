@@ -88,7 +88,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     };
 
     return (
-        <div style={styles.toolbarOuter}>
+        <div className="toolbarOuter" style={styles.toolbarOuter}>
             {startWindowOpen && (
                 <div
                     onMouseDown={onStartWindowClicked}

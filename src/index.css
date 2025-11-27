@@ -428,20 +428,44 @@ input:active {
 .start-menu-option:hover {
     background-color: #0000aa;
     cursor: pointer;
-    color: white;
+    cursor: white;
 }
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+
+    /* Force ALL windows to fill screen on mobile */
     .os-window {
-        width: 100% !important;
-        height: calc(100% - 48px) !important;
-        /* Leave space for toolbar */
+        width: 100vw !important;
+        height: calc(100vh - 32px) !important;
+        /* Leave space for 32px toolbar */
         top: 0 !important;
         left: 0 !important;
         border-radius: 0 !important;
         transform: none !important;
-        /* Disable drag transform */
+        position: fixed !important;
+    }
+
+    /* Ensure toolbar stays visible */
+    .toolbarOuter {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 999999 !important;
+    }
+
+    /* Mobile Sidebar Styling */
+    .vertical-navbar {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        height: 100% !important;
+        width: 300px !important;
+        background: white !important;
+        z-index: 9999 !important;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3) !important;
+        overflow-y: auto !important;
     }
 
     .site-page-content {
@@ -451,6 +475,7 @@ input:active {
         /* Reduce padding */
         width: 100% !important;
         box-sizing: border-box;
+        position: relative !important;
     }
 
     .site-page {
@@ -458,6 +483,7 @@ input:active {
         /* Allow natural flow */
         height: 100%;
         width: 100%;
+        overflow: hidden !important;
     }
 
     /* Adjust typography for mobile */
