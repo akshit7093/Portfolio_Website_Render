@@ -1,0 +1,67 @@
+{
+  "name": "portfolio-website",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.4",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.1",
+    "@types/node": "^16.11.26",
+    "@types/react": "^17.0.40",
+    "@types/react-dom": "^17.0.13",
+    "ansi-to-react": "^6.1.6",
+    "akshit-sharma-cli": "^1.0.12",
+    "boxen": "^4.2.0",
+    "chalk": "^4.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "emulators-ui": "^0.73.1",
+    "express": "^4.21.2",
+    "framer-motion": "^6.2.9",
+    "gradient-string": "^2.0.2",
+    "js-dos": "^7.3.9",
+    "marked": "^15.0.12",
+    "marked-terminal": "^4.2.0",
+    "mermaid": "^11.12.1",
+    "node-fetch": "^2.7.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-markdown": "^6.0.3",
+    "react-router": "^6.22.3",
+    "react-router-dom": "^6.2.2",
+    "react-scripts": "^5.0.1",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^1.0.0",
+    "remark-math": "^6.0.0",
+    "typescript": "^4.6.2",
+    "usehooks-ts": "^2.5.1",
+    "web-vitals": "^2.1.4",
+    "ws": "^8.18.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "chatbot-server": "node server/chatbot-server.js",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
