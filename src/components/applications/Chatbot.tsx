@@ -141,7 +141,7 @@ const ChatbotApp: React.FC<ChatbotProps> = (props) => {
         >
             <div className="site-page" style={styles.container}>
                 <div style={styles.header}>
-                    <h2>AKSHIT'S ENHANCED AI ASSISTANT</h2>
+                    <h2 style={window.innerWidth <= 768 ? { fontSize: '18px' } : {}}>AKSHIT'S ENHANCED AI ASSISTANT</h2>
                     <p style={styles.status}>{connected ? '● Connected' : '○ Connecting...'}</p>
                 </div>
                 <div style={styles.terminal} ref={logRef}>

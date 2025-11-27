@@ -8,9 +8,9 @@ const HenordleApp: React.FC<HenordleAppProps> = (props) => {
     return (
         <Window
             top={20}
-            left={300}
-            width={600}
-            height={860}
+            left={window.innerWidth <= 768 ? 0 : 300}
+            width={window.innerWidth <= 768 ? window.innerWidth : 600}
+            height={window.innerWidth <= 768 ? window.innerHeight : 860}
             windowBarIcon="windowGameIcon"
             windowTitle="Henordle"
             closeWindow={props.onClose}

@@ -49,7 +49,8 @@ const ResearchPapersApp: React.FC<ResearchPapersAppProps> = (props) => {
                         .replace(/[\r\n]?ight\)/g, '\\right)')   // Fix \right) (CR/LF + ight)
                         .replace(/eft\(/g, '\\left(')            // Fix \left( (eft)
                         .replace(/([^\\])hat\{/g, '$1\\hat{')    // Fix \hat (if backslash missing)
-                        .replace(/([^\\])sum_/g, '$1\\sum_');    // Fix \sum (if backslash missing)
+                        .replace(/([^\\])sum_/g, '$1\\sum_')     // Fix \sum (if backslash missing)
+                        .replace(/–/g, '-');                     // Fix en-dashes in math
 
                     return {
                         id: meta.id,
@@ -143,7 +144,15 @@ const ResearchPapersApp: React.FC<ResearchPapersAppProps> = (props) => {
                 </div>
                 <div style={styles.content}>
                     {selectedPaper ? (
-                        <div className="markdown-content" style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div className="markdown-content" style={{
+                            padding: isMobile ? '16px' : '32px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '16px',
+                            overflowWrap: 'break-word',
+                            wordWrap: 'break-word',
+                            maxWidth: '100%'
+                        }}>
                             <ReactMarkdown
                                 remarkPlugins={[remarkGfm, remarkMath] as any}
                                 rehypePlugins={[rehypeKatex] as any}
@@ -157,7 +166,7 @@ const ResearchPapersApp: React.FC<ResearchPapersAppProps> = (props) => {
                                         }
 
                                         return !inline && match ? (
-                                            <pre className={className}>
+                                            <pre className={className} style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                                                 <code {...props} className={className}>
                                                     {children}
                                                 </code>
@@ -167,7 +176,9 @@ const ResearchPapersApp: React.FC<ResearchPapersAppProps> = (props) => {
                                                 {children}
                                             </code>
                                         );
-                                    }
+                                    },
+                                    // Ensure images are responsive
+                                    img: ({ node, ...props }) => <img style={{ maxWidth: '100%', height: 'auto' }} {...props} />
                                 }}
                             >
                                 {selectedPaper.content}

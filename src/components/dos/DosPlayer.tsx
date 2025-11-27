@@ -5,8 +5,8 @@ import { DosPlayer as Instance, DosPlayerFactoryType } from 'js-dos';
 declare const Dos: DosPlayerFactoryType;
 
 interface PlayerProps {
-    width: number;
-    height: number;
+    width: number | string;
+    height: number | string;
     bundleUrl: string;
 }
 

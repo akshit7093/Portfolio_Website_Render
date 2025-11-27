@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import DosPlayer from '../dos/DosPlayer';
 import Window from '../os/Window';
 
-export interface DoomAppProps extends WindowAppProps {}
+export interface DoomAppProps extends WindowAppProps { }
 
 const DoomApp: React.FC<DoomAppProps> = (props) => {
     const [width, setWidth] = useState(980);
     const [height, setHeight] = useState(670);
+    const isMobile = window.innerWidth <= 768;
 
     return (
         <Window
@@ -24,7 +25,7 @@ const DoomApp: React.FC<DoomAppProps> = (props) => {
             onWidthChange={setWidth}
             onHeightChange={setHeight}
         >
-            <DosPlayer width={width} height={height} bundleUrl="doom.jsdos" />
+            <DosPlayer width={isMobile ? '100%' : width} height={isMobile ? '100%' : height} bundleUrl="doom.jsdos" />
         </Window>
     );
 };

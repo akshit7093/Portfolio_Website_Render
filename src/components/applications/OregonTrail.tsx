@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import DosPlayer from '../dos/DosPlayer';
 import Window from '../os/Window';
 
-export interface OregonTrailAppProps extends WindowAppProps {}
+export interface OregonTrailAppProps extends WindowAppProps { }
 
 const OregonTrailApp: React.FC<OregonTrailAppProps> = (props) => {
     const [width, setWidth] = useState(920);
     const [height, setHeight] = useState(750);
+    const isMobile = window.innerWidth <= 768;
 
     return (
         <Window
@@ -24,7 +25,7 @@ const OregonTrailApp: React.FC<OregonTrailAppProps> = (props) => {
             onWidthChange={setWidth}
             onHeightChange={setHeight}
         >
-            <DosPlayer width={width} height={height} bundleUrl="trail.jsdos" />
+            <DosPlayer width={isMobile ? '100%' : width} height={isMobile ? '100%' : height} bundleUrl="trail.jsdos" />
         </Window>
     );
 };

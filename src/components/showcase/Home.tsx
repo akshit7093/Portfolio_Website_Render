@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from '../general';
 import { useNavigate } from 'react-router-dom';
 
-export interface HomeProps {}
+export interface HomeProps { }
 
 const Home: React.FC<HomeProps> = (props) => {
     const navigate = useNavigate();
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const goToContact = () => {
         navigate('/contact');
@@ -14,10 +23,10 @@ const Home: React.FC<HomeProps> = (props) => {
     return (
         <div style={styles.page}>
             <div style={styles.header}>
-                <h1 style={styles.name}>Akshit Sharma</h1>
+                <h1 style={Object.assign({}, styles.name, isMobile && { fontSize: 32 })}>Akshit Sharma</h1>
                 <h2>Backend & AI/ML Engineer</h2>
             </div>
-            <div style={styles.buttons}>
+            <div style={Object.assign({}, styles.buttons, isMobile && { flexDirection: 'column', gap: 0 })}>
                 <Link containerStyle={styles.link} to="about" text="ABOUT" />
                 <Link
                     containerStyle={styles.link}
@@ -51,6 +60,7 @@ const styles: StyleSheetCSS = {
         alignItems: 'center',
         flexDirection: 'column',
         height: '100%',
+        display: 'flex', // Added display flex
     },
     header: {
         textAlign: 'center',
@@ -60,9 +70,12 @@ const styles: StyleSheetCSS = {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        display: 'flex', // Added display flex
     },
     buttons: {
         justifyContent: 'space-between',
+        display: 'flex', // Added display flex
+        flexWrap: 'wrap', // Allow wrapping
     },
     image: {
         width: 800,
@@ -80,6 +93,7 @@ const styles: StyleSheetCSS = {
         justifyContent: 'center',
         alignItems: 'center',
         cursor: 'pointer',
+        display: 'flex', // Added display flex
     },
     name: {
         fontSize: 72,

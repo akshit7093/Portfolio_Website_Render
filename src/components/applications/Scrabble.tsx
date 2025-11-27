@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import DosPlayer from '../dos/DosPlayer';
 import Window from '../os/Window';
 
-export interface ScrabbleAppProps extends WindowAppProps {}
+export interface ScrabbleAppProps extends WindowAppProps { }
 
 const ScrabbleApp: React.FC<ScrabbleAppProps> = (props) => {
     const [width, setWidth] = useState(920);
     const [height, setHeight] = useState(750);
+    const isMobile = window.innerWidth <= 768;
 
     return (
         <Window
@@ -25,8 +26,8 @@ const ScrabbleApp: React.FC<ScrabbleAppProps> = (props) => {
             minimizeWindow={props.onMinimize}
         >
             <DosPlayer
-                width={width}
-                height={height}
+                width={isMobile ? '100%' : width}
+                height={isMobile ? '100%' : height}
                 bundleUrl="scrabble.jsdos"
             />
         </Window>
