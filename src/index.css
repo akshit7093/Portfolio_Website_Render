@@ -465,7 +465,13 @@ input:active {
         background: white !important;
         z-index: 9999 !important;
         box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3) !important;
+        transition: transform 0.3s ease-in-out !important;
         overflow-y: auto !important;
+    }
+
+    /* Hide sidebar off-screen when closed (handled by React state, but CSS fallback) */
+    .vertical-navbar.closed {
+        transform: translateX(-100%) !important;
     }
 
     .site-page-content {
