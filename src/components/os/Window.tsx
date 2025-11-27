@@ -37,13 +37,16 @@ const Window: React.FC<WindowProps> = (props) => {
 
     const resizeRef = useRef<any>(null);
 
-    const [top, setTop] = useState(props.top);
-    const [left, setLeft] = useState(props.left);
+    // Detect mobile device
+    const isMobile = window.innerWidth <= 768;
+
+    // Initialize state with mobile check
+    const [top, setTop] = useState(isMobile ? 0 : props.top);
+    const [left, setLeft] = useState(isMobile ? 0 : props.left);
+    const [width, setWidth] = useState(isMobile ? window.innerWidth : props.width);
+    const [height, setHeight] = useState(isMobile ? window.innerHeight - 32 : props.height);
 
     const lastClickInside = useRef(false);
-
-    const [width, setWidth] = useState(props.width);
-    const [height, setHeight] = useState(props.height);
 
     const [contentWidth, setContentWidth] = useState(props.width);
     const [contentHeight, setContentHeight] = useState(props.height);
@@ -115,6 +118,32 @@ const Window: React.FC<WindowProps> = (props) => {
         };
         window.addEventListener('mousemove', onDrag, false);
         window.addEventListener('mouseup', stopDrag, false);
+    };
+
+    // Touch Event Handlers
+    const startTouchDrag = (event: any) => {
+        const touch = event.touches[0];
+        const { clientX, clientY } = touch;
+        setIsDragging(true);
+        dragProps.current = {
+            dragStartX: clientX,
+            dragStartY: clientY,
+        };
+        window.addEventListener('touchmove', onTouchDrag, { passive: false });
+        window.addEventListener('touchend', stopTouchDrag, false);
+    };
+
+    const onTouchDrag = (event: any) => {
+        event.preventDefault(); // Prevent scrolling while dragging
+        const touch = event.touches[0];
+        onDrag({ clientX: touch.clientX, clientY: touch.clientY });
+    };
+
+    const stopTouchDrag = (event: any) => {
+        const touch = event.changedTouches[0];
+        stopDrag({ clientX: touch.clientX, clientY: touch.clientY });
+        window.removeEventListener('touchmove', onTouchDrag);
+        window.removeEventListener('touchend', stopTouchDrag);
     };
 
     const getDockRect = (
@@ -246,14 +275,11 @@ const Window: React.FC<WindowProps> = (props) => {
         lastClickInside.current = true;
     };
 
-    // Detect mobile device
-    const isMobile = window.innerWidth <= 768;
     const mobileStyles = isMobile ? {
         width: '100vw',
         height: 'calc(100vh - 32px)',
-        top: 0,
-        left: 0,
-        position: 'fixed' as const,
+        // We don't force top/left/position here anymore to allow dragging
+        // But we initialize them correctly in useState
     } : {
         width,
         height,
@@ -262,10 +288,15 @@ const Window: React.FC<WindowProps> = (props) => {
     };
 
     return (
-        <div onMouseDown={onWindowInteract} style={styles.container}>
+        <div onMouseDown={onWindowInteract} onTouchStart={onWindowInteract} style={styles.container}>
             <div
                 className="os-window"
-                style={Object.assign({}, styles.window, mobileStyles)}
+                style={Object.assign({}, styles.window, {
+                    width,
+                    height,
+                    top,
+                    left,
+                })}
                 ref={windowRef}
             >
                 <div style={styles.windowBorderOuter}>
@@ -273,6 +304,7 @@ const Window: React.FC<WindowProps> = (props) => {
                         <div
                             style={styles.dragHitbox}
                             onMouseDown={startDrag}
+                            onTouchStart={startTouchDrag}
                         ></div>
                         <div
                             className={props.rainbow ? 'rainbow-wrapper' : ''}
@@ -479,6 +511,7 @@ const styles: StyleSheetCSS = {
         cursor: 'nwse-resize',
     },
     topBar: {
+        display: 'flex',
         backgroundColor: Colors.blue,
         width: '100%',
         height: 20,

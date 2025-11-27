@@ -340,6 +340,7 @@ const styles: StyleSheetCSS = {
         marginRight: 4,
     },
     toolbarInner: {
+        display: 'flex',
         borderTop: `1px solid ${Colors.white}`,
 
         alignItems: 'center',

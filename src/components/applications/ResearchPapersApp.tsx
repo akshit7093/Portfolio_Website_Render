@@ -69,6 +69,26 @@ const ResearchPapersApp: React.FC<ResearchPapersAppProps> = (props) => {
     }, []);
 
     const selectedPaper = papers.find(p => p.id === selectedPaperId);
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 768) {
+                setSidebarOpen(true);
+            } else {
+                setSidebarOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
+    const isMobile = window.innerWidth <= 768;
 
     return (
         <Window
@@ -84,7 +104,24 @@ const ResearchPapersApp: React.FC<ResearchPapersAppProps> = (props) => {
             bottomLeftText={'© Research Archive'}
         >
             <div style={styles.container}>
-                <div style={styles.sidebar}>
+                {/* Hamburger Menu Button (Mobile Only) */}
+                {isMobile && (
+                    <button
+                        onClick={toggleSidebar}
+                        style={styles.hamburger}
+                        aria-label="Toggle navigation"
+                    >
+                        ☰
+                    </button>
+                )}
+
+                <div style={Object.assign({}, styles.sidebar,
+                    isMobile && !sidebarOpen && { transform: 'translateX(-100%)', position: 'absolute', height: '100%', zIndex: 1000 },
+                    isMobile && sidebarOpen && { transform: 'translateX(0)', position: 'absolute', height: '100%', zIndex: 1000, boxShadow: '2px 0 5px rgba(0,0,0,0.5)' }
+                )}>
+                    {isMobile && (
+                        <button onClick={() => setSidebarOpen(false)} style={styles.closeButton}>×</button>
+                    )}
                     <h3 style={styles.sidebarHeader}>Papers</h3>
                     <div style={styles.navLinks}>
                         {papers.map((paper) => (
@@ -94,7 +131,10 @@ const ResearchPapersApp: React.FC<ResearchPapersAppProps> = (props) => {
                                     ...styles.navItem,
                                     ...(selectedPaperId === paper.id ? styles.activeNavItem : {}),
                                 }}
-                                onClick={() => setSelectedPaperId(paper.id)}
+                                onClick={() => {
+                                    setSelectedPaperId(paper.id);
+                                    if (isMobile) setSidebarOpen(false);
+                                }}
                             >
                                 {paper.title}
                             </div>
@@ -149,6 +189,8 @@ const styles: StyleSheetCSS = {
         height: '100%',
         width: '100%',
         backgroundColor: '#fff',
+        position: 'relative',
+        overflow: 'hidden',
     },
     sidebar: {
         width: '250px',
@@ -158,6 +200,7 @@ const styles: StyleSheetCSS = {
         flexDirection: 'column',
         backgroundColor: '#c0c0c0',
         flexShrink: 0,
+        transition: 'transform 0.3s ease',
     },
     sidebarHeader: {
         marginBottom: '24px',
@@ -165,6 +208,7 @@ const styles: StyleSheetCSS = {
         fontSize: '24px',
         borderBottom: '2px solid #000',
         paddingBottom: '8px',
+        marginTop: '20px',
     },
     navLinks: {
         display: 'flex',
@@ -188,6 +232,27 @@ const styles: StyleSheetCSS = {
         padding: '0', // Padding handled by inner div
         backgroundColor: '#fff',
     },
+    hamburger: {
+        position: 'absolute',
+        top: 8,
+        left: 8,
+        zIndex: 1001,
+        fontSize: 24,
+        background: '#f0f0f0',
+        border: '1px solid #ccc',
+        borderRadius: 4,
+        padding: '4px 8px',
+        cursor: 'pointer',
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        fontSize: 24,
+        background: 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+    }
 };
 
 export default ResearchPapersApp;
