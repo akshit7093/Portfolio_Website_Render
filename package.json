@@ -21,8 +21,6 @@
     "framer-motion": "^6.2.9",
     "gradient-string": "^2.0.2",
     "js-dos": "^7.3.9",
-    "marked": "^15.0.12",
-    "marked-terminal": "^4.2.0",
     "mermaid": "^11.12.1",
     "node-fetch": "^2.7.0",
     "react": "^17.0.2",
