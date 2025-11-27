@@ -3,12 +3,28 @@ const cors = require('cors');
 const { spawn } = require('child_process');
 const WebSocket = require('ws');
 
-const PORT = process.env.CHATBOT_PORT || 4000;
+const PORT = process.env.PORT || process.env.CHATBOT_PORT || 4000;
 const ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000').split(',');
 
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
+
+// Security Middleware
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP for now to avoid breaking scripts/styles
+}));
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+app.use('/api/', limiter); // Apply to API routes
+
 app.use(cors({ origin: ORIGINS }));
 
 // Serve static files from the React app

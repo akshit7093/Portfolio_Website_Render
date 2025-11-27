@@ -10,16 +10,18 @@
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.40",
     "@types/react-dom": "^17.0.13",
-    "ansi-to-react": "^6.1.6",
     "akshit-sharma-cli": "^1.0.12",
+    "ansi-to-react": "^6.1.6",
     "boxen": "^4.2.0",
     "chalk": "^4.1.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "emulators-ui": "^0.73.1",
     "express": "^4.21.2",
+    "express-rate-limit": "^8.2.1",
     "framer-motion": "^6.2.9",
     "gradient-string": "^2.0.2",
+    "helmet": "^8.1.0",
     "js-dos": "^7.3.9",
     "mermaid": "^11.12.1",
     "node-fetch": "^2.7.0",
@@ -28,7 +30,7 @@
     "react-markdown": "^6.0.3",
     "react-router": "^6.22.3",
     "react-router-dom": "^6.2.2",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "^0.0.0",
     "rehype-katex": "^7.0.1",
     "remark-gfm": "^1.0.0",
     "remark-math": "^6.0.0",
@@ -38,9 +40,9 @@
     "ws": "^8.18.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "chatbot-server": "node server/chatbot-server.js",
-    "build": "react-scripts build",
+    "start": "node server/chatbot-server.js",
+    "dev": "concurrently \"react-scripts start\" \"node server/chatbot-server.js\"",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -61,5 +63,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
