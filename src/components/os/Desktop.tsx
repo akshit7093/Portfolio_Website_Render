@@ -242,9 +242,7 @@ const Desktop: React.FC<DesktopProps> = (props) => {
                 {shortcuts.map((shortcut, i) => {
                     return (
                         <div
-                            style={Object.assign({}, styles.shortcutContainer, {
-                                top: i * 104,
-                            })}
+                            style={styles.shortcutContainer}
                             key={shortcut.shortcutName}
                         >
                             <DesktopShortcut
@@ -281,13 +279,20 @@ const styles: StyleSheetCSS = {
         flex: 1,
         backgroundColor: '#1d2e2f',
     },
-    shortcutContainer: {
-        position: 'absolute',
-    },
     shortcuts: {
         position: 'absolute',
         top: 16,
         left: 6,
+        bottom: 64, // Leave space for toolbar
+        display: 'flex',
+        flexDirection: 'column',
+        flexWrap: 'wrap',
+        alignContent: 'flex-start',
+    },
+    shortcutContainer: {
+        position: 'relative',
+        marginBottom: 16,
+        marginRight: 16,
     },
     minimized: {
         pointerEvents: 'none',

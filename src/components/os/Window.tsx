@@ -249,6 +249,7 @@ const Window: React.FC<WindowProps> = (props) => {
     return (
         <div onMouseDown={onWindowInteract} style={styles.container}>
             <div
+                className="os-window"
                 style={Object.assign({}, styles.window, {
                     width,
                     height,
@@ -385,14 +386,14 @@ const Window: React.FC<WindowProps> = (props) => {
                 style={
                     !isResizing
                         ? {
-                              zIndex: -10000,
-                              pointerEvents: 'none',
-                          }
+                            zIndex: -10000,
+                            pointerEvents: 'none',
+                        }
                         : {
-                              zIndex: 1000,
-                              cursor: 'nwse-resize',
-                              mixBlendMode: 'difference',
-                          }
+                            zIndex: 1000,
+                            cursor: 'nwse-resize',
+                            mixBlendMode: 'difference',
+                        }
                 }
             >
                 <ResizeIndicator
@@ -407,14 +408,14 @@ const Window: React.FC<WindowProps> = (props) => {
                 style={
                     !isDragging
                         ? {
-                              zIndex: -10000,
-                              pointerEvents: 'none',
-                          }
+                            zIndex: -10000,
+                            pointerEvents: 'none',
+                        }
                         : {
-                              zIndex: 1000,
-                              cursor: 'move',
-                              mixBlendMode: 'difference',
-                          }
+                            zIndex: 1000,
+                            cursor: 'move',
+                            mixBlendMode: 'difference',
+                        }
                 }
             >
                 <DragIndicator

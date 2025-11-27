@@ -21,7 +21,7 @@ const DesktopShortcut: React.FC<DesktopShortcutProps> = ({
     const [lastSelected, setLastSelected] = useState(false);
     const containerRef = useRef<any>();
 
-    const [scaledStyle, setScaledStyle] = useState({});
+    // const [scaledStyle, setScaledStyle] = useState({}); // Removed dynamic scaling
 
     const requiredIcon = require(`../../assets/icons/${icon}.png`);
     const [doubleClickTimerActive, setDoubleClickTimerActive] = useState(false);
@@ -34,22 +34,6 @@ const DesktopShortcut: React.FC<DesktopShortcutProps> = ({
     useEffect(() => {
         setShortcutId(getShortcutId());
     }, [shortcutName, getShortcutId]);
-
-    useEffect(() => {
-        if (containerRef.current && Object.keys(scaledStyle).length === 0) {
-            //@ts-ignore
-            const boundingBox = containerRef.current.getBoundingClientRect();
-            setScaledStyle({
-                transformOrigin: 'center',
-                transform: 'scale(1.5)',
-                left: boundingBox.width / 4,
-                top: boundingBox.height / 4,
-                // transform: 'scale(1.5)',
-                // left: boundingBox.width / 4,
-                // top: boundingBox.height / 4,
-            });
-        }
-    }, [scaledStyle]);
 
     const handleClickOutside = useCallback(
         (event: MouseEvent) => {
@@ -91,7 +75,7 @@ const DesktopShortcut: React.FC<DesktopShortcutProps> = ({
     return (
         <div
             id={`${shortcutId}`}
-            style={Object.assign({}, styles.appShortcut, scaledStyle)}
+            style={styles.appShortcut}
             onMouseDown={handleClickShortcut}
             ref={containerRef}
         >
@@ -115,8 +99,8 @@ const DesktopShortcut: React.FC<DesktopShortcutProps> = ({
                     isSelected
                         ? 'selected-shortcut-border'
                         : lastSelected
-                        ? 'shortcut-border'
-                        : ''
+                            ? 'shortcut-border'
+                            : ''
                 }
                 id={`${shortcutId}`}
                 style={isSelected ? { backgroundColor: colors.blue } : {}}
@@ -138,13 +122,15 @@ const DesktopShortcut: React.FC<DesktopShortcutProps> = ({
 
 const styles: StyleSheetCSS = {
     appShortcut: {
-        position: 'absolute',
         width: 56,
-
+        // height: 56, // Optional: fixed height to ensure spacing
+        display: 'flex', // Ensure flex layout for internal alignment
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
         textAlign: 'center',
+        transform: 'scale(1.5)', // Keep the scale if desired, but handle spacing
+        margin: 16, // Add margin to account for scaling overlap
     },
     shortcutText: {
         cursor: 'pointer',

@@ -9,8 +9,12 @@ const ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://12
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 
 const app = express();
+
+// Enable Gzip compression
+app.use(compression());
 
 // Security Middleware
 app.use(helmet({
@@ -27,8 +31,11 @@ app.use('/api/', limiter); // Apply to API routes
 
 app.use(cors({ origin: ORIGINS }));
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../build')));
+// Serve static files from the React app with caching (1 year)
+app.use(express.static(path.join(__dirname, '../build'), {
+  maxAge: '1y',
+  etag: false
+}));
 
 const server = app.listen(PORT, () => {
   console.log(`[chatbot-server] Listening on http://localhost:${PORT}`);

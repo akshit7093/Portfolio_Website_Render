@@ -400,3 +400,15 @@ input:active {
     cursor: pointer;
     color: white;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .os-window {
+        width: 100% !important;
+        height: calc(100% - 48px) !important; /* Leave space for toolbar (40px + padding) */
+        top: 0 !important;
+        left: 0 !important;
+        border-radius: 0 !important;
+        transform: none !important; /* Disable drag transform */
+    }
+}
