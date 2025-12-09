@@ -2,7 +2,7 @@ import React from 'react';
 
 const OpenStack: React.FC = () => {
     return (
-        <div style={{ padding: '24px', height: '100%', boxSizing: 'border-box', overflowY: 'auto' }}>
+        <div className="markdown-content" style={{ padding: '24px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
             <h2>OpenStack Cloud Manager</h2>
             <h3>Natural Language Interface</h3>
             <br />

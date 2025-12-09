@@ -89,11 +89,11 @@ The following architecture diagram illustrates the system:
 
 ```mermaid
 graph TD
-    classDef input fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
-    classDef process fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000;
-    classDef network fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,stroke-dasharray:5 5,color:#000;
-    classDef model fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000;
-    classDef output fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef input fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000
+    classDef process fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef network fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,stroke-dasharray:5 5,color:#000
+    classDef model fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
+    classDef output fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000
 
     %% Input Layer
     TrainCSV["<b>train.csv</b><br/>(75,000 samples)<br/>ID | Text | Image | Price"]:::input
@@ -111,7 +111,7 @@ graph TD
     Split --> ImageBranch["<b>IMAGE PIPELINE</b>"]:::network
 
     %% TEXT BRANCH DETAILS
-    subgraph TextPipe ["Text Processing"]
+    subgraph TextPipe [Text Processing]
         T1["1. Cleaning<br/>(HTML strip, regex)"]:::process
         T2["2. Structured Extraction<br/>(Value, Unit, Brand)"]:::process
         T3["3. Normalization<br/>(NLTK Lemmatize)"]:::process
@@ -124,7 +124,7 @@ graph TD
     T5 --> TextFeats["Text Features<br/>(6,300 dims)"]:::output
 
     %% IMAGE BRANCH DETAILS
-    subgraph ImagePipe ["Image Processing (Distributed Ray)"]
+    subgraph ImagePipe [Image Processing (Distributed Ray)]
         I0["<b>Ray Init (42 Nodes)</b><br/>336 cores, 2TB RAM"]:::network
         I1["<b>Parallel Download</b><br/>(Retries, Checkpoints)"]:::process
         I2a["<b>Path 1: ResNet50</b><br/>(Semantic Vibe)<br/>2,048 dims"]:::model

@@ -26,8 +26,8 @@ const ScrabbleApp: React.FC<ScrabbleAppProps> = (props) => {
             minimizeWindow={props.onMinimize}
         >
             <DosPlayer
-                width={isMobile ? '100%' : width}
-                height={isMobile ? '100%' : height}
+                width={isMobile ? '100%' : width - 12}
+                height={isMobile ? '100%' : height - 70}
                 bundleUrl="scrabble.jsdos"
             />
         </Window>

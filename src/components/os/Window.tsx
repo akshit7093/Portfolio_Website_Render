@@ -23,6 +23,7 @@ export interface WindowProps {
     windowBarIcon?: IconName;
     onWidthChange?: (width: number) => void;
     onHeightChange?: (height: number) => void;
+    onToggleSidebar?: () => void;
 }
 
 const Window: React.FC<WindowProps> = (props) => {
@@ -91,15 +92,26 @@ const Window: React.FC<WindowProps> = (props) => {
         window.addEventListener('mouseup', stopResize, false);
     };
 
+    const requestRef = useRef<number>();
+
     const onResize = ({ clientX, clientY }: any) => {
-        const curWidth = clientX - left;
-        const curHeight = clientY - top;
-        if (curWidth > 520) resizeRef.current.style.width = `${curWidth}px`;
-        if (curHeight > 220) resizeRef.current.style.height = `${curHeight}px`;
-        resizeRef.current.style.opacity = 1;
+        if (requestRef.current) return;
+
+        requestRef.current = requestAnimationFrame(() => {
+            const curWidth = clientX - left;
+            const curHeight = clientY - top;
+            if (curWidth > 520) resizeRef.current.style.width = `${curWidth}px`;
+            if (curHeight > 220) resizeRef.current.style.height = `${curHeight}px`;
+            resizeRef.current.style.opacity = 1;
+            requestRef.current = undefined;
+        });
     };
 
     const stopResize = () => {
+        if (requestRef.current) {
+            cancelAnimationFrame(requestRef.current);
+            requestRef.current = undefined;
+        }
         setIsResizing(false);
         setWidth(resizeRef.current.style.width);
         setHeight(resizeRef.current.style.height);
@@ -134,7 +146,9 @@ const Window: React.FC<WindowProps> = (props) => {
     };
 
     const onTouchDrag = (event: any) => {
-        event.preventDefault(); // Prevent scrolling while dragging
+        if (event.cancelable) {
+            event.preventDefault(); // Prevent scrolling while dragging
+        }
         const touch = event.touches[0];
         onDrag({ clientX: touch.clientX, clientY: touch.clientY });
     };
@@ -162,16 +176,26 @@ const Window: React.FC<WindowProps> = (props) => {
     };
 
     const onDrag = ({ clientX, clientY }: any) => {
-        let { x, y } = getXYFromDragProps(clientX, clientY);
-        dragRef.current.style.transform = `translate(${x}px, ${y}px)`;
-        dragRef.current.style.opacity = 1;
+        if (requestRef.current) return;
 
-        const target = getSnapTargetFromCoords(clientX, clientY);
-        setSnapTarget(target);
-        setDockRect(target ? getDockRect(target) : null);
+        requestRef.current = requestAnimationFrame(() => {
+            let { x, y } = getXYFromDragProps(clientX, clientY);
+            // Use translate3d for GPU acceleration
+            dragRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+            dragRef.current.style.opacity = 1;
+
+            const target = getSnapTargetFromCoords(clientX, clientY);
+            setSnapTarget(target);
+            setDockRect(target ? getDockRect(target) : null);
+            requestRef.current = undefined;
+        });
     };
 
     const stopDrag = ({ clientX, clientY }: any) => {
+        if (requestRef.current) {
+            cancelAnimationFrame(requestRef.current);
+            requestRef.current = undefined;
+        }
         setIsDragging(false);
         const { x, y } = getXYFromDragProps(clientX, clientY);
         // Recompute target on mouseup to avoid any stale state race
@@ -212,7 +236,8 @@ const Window: React.FC<WindowProps> = (props) => {
     };
 
     useEffect(() => {
-        dragRef.current.style.transform = `translate(${left}px, ${top}px)`;
+        // Use translate3d for GPU acceleration
+        dragRef.current.style.transform = `translate3d(${left}px, ${top}px, 0)`;
     });
 
     useEffect(() => {
@@ -296,6 +321,7 @@ const Window: React.FC<WindowProps> = (props) => {
                     height,
                     top,
                     left,
+                    willChange: isDragging || isResizing ? 'transform, width, height' : 'auto',
                 })}
                 ref={windowRef}
             >
@@ -320,6 +346,31 @@ const Window: React.FC<WindowProps> = (props) => {
                             )}
                         >
                             <div style={styles.windowHeader}>
+                                {props.onToggleSidebar && (
+                                    <button
+                                        onClick={props.onToggleSidebar}
+                                        onMouseDown={(e) => e.stopPropagation()}
+                                        onTouchStart={(e) => e.stopPropagation()}
+                                        onDoubleClick={(e) => e.stopPropagation()}
+                                        style={{
+                                            background: 'transparent',
+                                            border: 'none',
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: 'bold',
+                                            cursor: 'pointer',
+                                            padding: '0 8px',
+                                            marginRight: 4,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            height: '100%',
+                                            position: 'relative',
+                                            zIndex: 10002,
+                                        }}
+                                    >
+                                        ☰
+                                    </button>
+                                )}
                                 {props.windowBarIcon ? (
                                     <Icon
                                         icon={props.windowBarIcon}
@@ -336,8 +387,8 @@ const Window: React.FC<WindowProps> = (props) => {
                                 <p
                                     style={
                                         windowActive
-                                            ? {}
-                                            : { color: colors.lightGray }
+                                            ? { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
+                                            : { color: colors.lightGray, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
                                     }
                                     className="showcase-header"
                                 >
@@ -477,6 +528,18 @@ const styles: StyleSheetCSS = {
     window: {
         backgroundColor: Colors.lightGray,
         position: 'absolute',
+        boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.2)', // Add shadow for better visibility
+        display: 'flex',
+        flexDirection: 'column',
+        boxSizing: 'border-box',
+    },
+    container: {
+        position: 'absolute', // Make container absolute to match window behavior
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0,
+        overflow: 'visible',
     },
     dragHitbox: {
         position: 'absolute',
@@ -486,12 +549,17 @@ const styles: StyleSheetCSS = {
         top: -8,
         left: -4,
         cursor: 'move',
+        touchAction: 'none', // Prevent browser handling of gestures
     },
     windowBorderOuter: {
         border: `1px solid ${Colors.black}`,
         borderTopColor: colors.lightGray,
         borderLeftColor: colors.lightGray,
         flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0, // Ensure it can shrink
+        boxSizing: 'border-box',
     },
     windowBorderInner: {
         border: `1px solid ${Colors.darkGray}`,
@@ -501,6 +569,9 @@ const styles: StyleSheetCSS = {
         padding: 2,
 
         flexDirection: 'column',
+        display: 'flex',
+        minHeight: 0, // Ensure it can shrink
+        boxSizing: 'border-box',
     },
     resizeHitbox: {
         position: 'absolute',
@@ -509,12 +580,14 @@ const styles: StyleSheetCSS = {
         bottom: -20,
         right: -20,
         cursor: 'nwse-resize',
+        touchAction: 'none',
     },
     topBar: {
         display: 'flex',
         backgroundColor: Colors.blue,
         width: '100%',
         height: 20,
+        flexShrink: 0, // Prevent top bar from shrinking
 
         alignItems: 'center',
         paddingRight: 2,
@@ -525,10 +598,16 @@ const styles: StyleSheetCSS = {
         borderTopColor: colors.darkGray,
         borderLeftColor: colors.darkGray,
         flexGrow: 1,
+        flexShrink: 1, // Allow content to shrink if needed
+        flexBasis: 0, // Force flex to calculate size based on constraint
 
         marginTop: 8,
         marginBottom: 8,
         overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0,
+        boxSizing: 'border-box',
     },
     contentInner: {
         border: `1px solid ${Colors.lightGray}`,
@@ -536,17 +615,26 @@ const styles: StyleSheetCSS = {
         borderLeftColor: colors.black,
         flex: 1,
         overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0,
+        boxSizing: 'border-box',
+        flexBasis: 0,
     },
     content: {
         flex: 1,
 
         position: 'relative',
-        // overflow: 'scroll',
+        overflowY: 'auto', // Enable vertical scrolling
         overflowX: 'hidden',
         backgroundColor: Colors.white,
+        minWidth: 0, // Prevent flex item from overflowing
+        minHeight: 0,
+        boxSizing: 'border-box',
+        flexBasis: 0,
     },
     bottomBar: {
-        flexShrink: 1,
+        flexShrink: 0, // Prevent bottom bar from shrinking
         width: '100%',
         height: 20,
     },
@@ -569,8 +657,11 @@ const styles: StyleSheetCSS = {
     },
     windowTopButtons: {
         // zIndex: 10000,
-
+        display: 'flex',
         alignItems: 'center',
+        flexShrink: 0,
+        minWidth: 60,
+        justifyContent: 'flex-end',
     },
     windowHeader: {
         flex: 1,

@@ -2,7 +2,7 @@ import React from 'react';
 
 const Chatbot: React.FC = () => {
     return (
-        <div style={{ padding: '24px', height: '100%', boxSizing: 'border-box', overflowY: 'auto' }}>
+        <div className="markdown-content" style={{ padding: '24px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
             <h2>Universal Chatbot Platform</h2>
             <h3>RAG & Fine-tuned LLMs</h3>
             <br />

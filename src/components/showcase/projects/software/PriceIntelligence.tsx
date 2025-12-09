@@ -2,7 +2,7 @@ import React from 'react';
 
 const PriceIntelligence: React.FC = () => {
     return (
-        <div className="text-block">
+        <div className="text-block markdown-content" style={{ padding: '24px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
             <h2>Multimodal Price Intelligence System</h2>
             <br />
             <p>
@@ -28,6 +28,8 @@ const PriceIntelligence: React.FC = () => {
             flex-direction: column;
             align-items: center;
             margin: 20px 0;
+            width: 100%;
+            max-width: 100%;
         }
         .flow-node {
             border: 2px dashed #333;
@@ -35,6 +37,8 @@ const PriceIntelligence: React.FC = () => {
             margin: 10px 0;
             text-align: center;
             min-width: 300px;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         .flow-arrow {
             animation: flowDown 2s ease-in-out infinite;
@@ -46,6 +50,8 @@ const PriceIntelligence: React.FC = () => {
             padding: 15px;
             margin: 10px 0;
             text-align: left;
+            max-width: 100%;
+            box-sizing: border-box;
         }
     `}} />
 

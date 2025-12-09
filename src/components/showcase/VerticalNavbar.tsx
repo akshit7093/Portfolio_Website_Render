@@ -109,8 +109,12 @@ const styles: StyleSheetCSS = {
         flexDirection: 'column',
         padding: 48,
         boxSizing: 'border-box',
-        position: 'fixed',
+        position: 'absolute', // Changed from fixed to absolute to stay within window
+        top: 0,
+        left: 0,
         overflow: 'hidden',
+        zIndex: 10,
+        backgroundColor: '#fff', // Ensure background is opaque
     },
     header: {
         flexDirection: 'column',

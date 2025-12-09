@@ -1,18 +1,21 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, Suspense } from 'react';
 import Colors from '../../constants/colors';
-import ShowcaseExplorer from '../applications/ShowcaseExplorer';
-import Doom from '../applications/Doom';
-import OregonTrail from '../applications/OregonTrail';
 import ShutdownSequence from './ShutdownSequence';
-// import ThisComputer from '../applications/ThisComputer';
-import Henordle from '../applications/Henordle';
 import Toolbar from './Toolbar';
 import DesktopShortcut, { DesktopShortcutProps } from './DesktopShortcut';
-import Scrabble from '../applications/Scrabble';
 import { IconName } from '../../assets/icons';
-import Chatbot from '../applications/Chatbot';
-import ProjectsApp from '../applications/ProjectsApp';
-import ResearchPapersApp from '../applications/ResearchPapersApp';
+import LoadingSpinner from './LoadingSpinner';
+
+// Lazy load applications
+const ShowcaseExplorer = React.lazy(() => import('../applications/ShowcaseExplorer'));
+const Doom = React.lazy(() => import('../applications/Doom'));
+const OregonTrail = React.lazy(() => import('../applications/OregonTrail'));
+const Henordle = React.lazy(() => import('../applications/Henordle'));
+const Scrabble = React.lazy(() => import('../applications/Scrabble'));
+const Chatbot = React.lazy(() => import('../applications/Chatbot'));
+const ProjectsApp = React.lazy(() => import('../applications/ProjectsApp'));
+const ResearchPapersApp = React.lazy(() => import('../applications/ResearchPapersApp'));
+const ThisComputer = React.lazy(() => import('../applications/ThisComputer'));
 
 export interface DesktopProps { }
 
@@ -23,15 +26,15 @@ const APPLICATIONS: {
         key: string;
         name: string;
         shortcutIcon: IconName;
-        component: React.FC<ExtendedWindowAppProps<any>>;
+        component: React.LazyExoticComponent<React.FC<ExtendedWindowAppProps<any>>>;
     };
 } = {
-    // computer: {
-    //     key: 'computer',
-    //     name: 'This Computer',
-    //     shortcutIcon: 'computerBig',
-    //     component: ThisComputer,
-    // },
+    computer: {
+        key: 'computer',
+        name: 'This Computer',
+        shortcutIcon: 'computerBig',
+        component: ThisComputer,
+    },
     showcase: {
         key: 'showcase',
         name: 'My Showcase',
@@ -215,6 +218,24 @@ const Desktop: React.FC<DesktopProps> = (props) => {
         [getHighestZIndex]
     );
 
+    const openApp = useCallback(
+        (key: string) => {
+            const app = APPLICATIONS[key];
+            if (app) {
+                addWindow(
+                    app.key,
+                    <app.component
+                        onInteract={() => onWindowInteract(app.key)}
+                        onMinimize={() => minimizeWindow(app.key)}
+                        onClose={() => removeWindow(app.key)}
+                        key={app.key}
+                    />
+                );
+            }
+        },
+        [addWindow, onWindowInteract, minimizeWindow, removeWindow]
+    );
+
     return !shutdown ? (
         <div style={styles.desktop}>
             {/* For each window in windows, loop over and render  */}
@@ -230,11 +251,14 @@ const Desktop: React.FC<DesktopProps> = (props) => {
                             windows[key].minimized && styles.minimized
                         )}
                     >
-                        {React.cloneElement(element, {
-                            key,
-                            onInteract: () => onWindowInteract(key),
-                            onClose: () => removeWindow(key),
-                        })}
+                        <Suspense fallback={<LoadingSpinner />}>
+                            {React.cloneElement(element, {
+                                key,
+                                onInteract: () => onWindowInteract(key),
+                                onClose: () => removeWindow(key),
+                                onOpenApp: openApp,
+                            })}
+                        </Suspense>
                     </div>
                 );
             })}

@@ -14,11 +14,14 @@ const Icon: React.FC<IconProps> = ({ icon, style, size }) => {
         style,
         size && { width: size, height: size }
     );
+    const src = getIconByName(icon);
+    if (!src) return null;
+
     return (
         <img
             style={iconStyle}
             alt={''}
-            src={getIconByName(icon) as unknown as string}
+            src={src as unknown as string}
         />
     );
 };

@@ -6,6 +6,7 @@ declare interface WindowAppProps {
     onClose: () => void;
     onInteract: () => void;
     onMinimize: () => void;
+    onOpenApp?: (key: string) => void;
 }
 
 declare type DesktopWindows = {

@@ -43,19 +43,11 @@ const ShowcaseExplorer: React.FC<ShowcaseExplorerProps> = (props) => {
             onInteract={props.onInteract}
             minimizeWindow={props.onMinimize}
             bottomLeftText={'© Copyright 2025 Akshit Sharma'}
+            onToggleSidebar={window.innerWidth <= 768 ? toggleSidebar : undefined}
         >
             <Router>
                 <div className="site-page">
-                    {/* Hamburger Menu Button (Mobile Only) */}
-                    {window.innerWidth <= 768 && (
-                        <button
-                            onClick={toggleSidebar}
-                            style={styles.hamburger}
-                            aria-label="Toggle navigation"
-                        >
-                            ☰
-                        </button>
-                    )}
+                    {/* Hamburger Menu Button (Mobile Only) - Moved to Window TitleBar */}
 
                     <VerticalNavbar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
@@ -82,19 +74,6 @@ const ShowcaseExplorer: React.FC<ShowcaseExplorerProps> = (props) => {
 };
 
 const styles: StyleSheetCSS = {
-    hamburger: {
-        position: 'fixed',
-        top: 8,
-        left: 8,
-        zIndex: 10000,
-        fontSize: 24,
-        background: '#f0f0f0',
-        border: '1px solid #ccc',
-        borderRadius: 4,
-        padding: '8px 12px',
-        cursor: 'pointer',
-        fontFamily: 'Arial, sans-serif',
-    },
 };
 
 export default ShowcaseExplorer;

@@ -17,7 +17,8 @@ import windowGameIcon from './windowGameIcon.png';
 import windowExplorerIcon from './windowExplorerIcon.png';
 import windowsStartIcon from './windowsStartIcon.png';
 import scrabbleIcon from './scrabbleIcon.png';
-import close from './close.png';
+import closeIcon from './close.png';
+import cd from './cd.png';
 
 const icons = {
     windowResize: windowResize,
@@ -33,11 +34,12 @@ const icons = {
     chatbot: chatbot,
     scrabbleIcon: scrabbleIcon,
     henordleIcon: henordleIcon,
-    close: close,
+    close: closeIcon,
     windowGameIcon: windowGameIcon,
     windowExplorerIcon: windowExplorerIcon,
     windowsStartIcon: windowsStartIcon,
     trailIcon: trailIcon,
+    cd: cd,
 };
 
 export type IconName = keyof typeof icons;

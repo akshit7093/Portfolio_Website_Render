@@ -9,10 +9,57 @@ mermaid.initialize({
 
 interface MermaidProps {
     chart: string;
+    className?: string;
+    style?: React.CSSProperties;
 }
 
-const Mermaid: React.FC<MermaidProps> = ({ chart }) => {
+// Preprocessor to fix common Mermaid syntax issues
+const preprocessMermaidChart = (chart: string): string => {
+    if (!chart) return chart;
+
+    // Fix 1: Quote node labels containing parentheses, asterisks, or brackets
+    // Matches patterns like: NodeName[Label with (parentheses)] or NodeName["Already quoted"]
+    // and ensures they're properly quoted
+    let processed = chart.replace(
+        /(\w+)(\[[^\]]*\])/g,
+        (match, nodeId, labelPart) => {
+            // Check if the label is already quoted
+            const labelContent = labelPart.slice(1, -1); // Remove brackets
+            if (labelContent.startsWith('"') && labelContent.endsWith('"')) {
+                return match; // Already quoted, leave as is
+            }
+
+            // Check if label contains special characters that need quoting
+            if (/[\(\)\*\[\]\{\}\|]/.test(labelContent)) {
+                return `${nodeId}["${labelContent}"]`;
+            }
+
+            return match; // No special characters, leave as is
+        }
+    );
+
+    // Fix 2: Replace standalone asterisks in node names/labels
+    // This handles cases like "A* Algorithm" which should be "A-Star Algorithm" or quoted
+    processed = processed.replace(/\bA\*\b/g, '"A*"');
+    processed = processed.replace(/\bA\* ([A-Za-z]+)\b/g, '"A* $1"');
+
+    // Fix 3: Ensure subgraph titles with special chars are quoted
+    processed = processed.replace(
+        /(subgraph\s+)([^\n]+)/g,
+        (match, keyword, title) => {
+            if (/[\(\)\*\[\]\{\}\|]/.test(title) && !(title.startsWith('"') && title.endsWith('"'))) {
+                return `${keyword}"${title}"`;
+            }
+            return match;
+        }
+    );
+
+    return processed;
+};
+
+const Mermaid: React.FC<MermaidProps> = ({ chart, className, style }) => {
     const [svg, setSvg] = useState<string>('');
+    const [error, setError] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const transformRef = useRef({ x: 0, y: 0, scale: 1 });
@@ -20,12 +67,39 @@ const Mermaid: React.FC<MermaidProps> = ({ chart }) => {
 
     useEffect(() => {
         if (chart) {
-            const id = `mermaid-${Date.now()}`;
-            mermaid.render(id, chart).then((result) => {
+            setError(null);
+            const id = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+            // Preprocess the chart to fix common syntax issues
+            const processedChart = preprocessMermaidChart(chart);
+
+            mermaid.render(id, processedChart).then((result) => {
                 setSvg(result.svg);
             }).catch((error) => {
                 console.error('Mermaid rendering failed:', error);
-                setSvg('<div style="color: red; padding: 10px;">Failed to render diagram</div>');
+                setError(error.message || 'Failed to render diagram');
+                setSvg(`
+                    <div style="
+                        color: #d32f2f; 
+                        background: #ffebee; 
+                        padding: 15px; 
+                        border: 1px solid #ef5350; 
+                        border-radius: 4px; 
+                        font-family: monospace;
+                        white-space: pre-wrap;
+                        overflow: auto;
+                        max-height: 200px;
+                    ">
+                        <strong>Mermaid Rendering Error:</strong><br/>
+                        ${error.message || 'Unknown error'}<br/><br/>
+                        <strong>Debug Info:</strong><br/>
+                        ${JSON.stringify({
+                    message: error.message,
+                    str: error.str,
+                    hash: error.hash
+                }, null, 2)}
+                    </div>
+                `);
             });
         }
     }, [chart]);
@@ -42,7 +116,6 @@ const Mermaid: React.FC<MermaidProps> = ({ chart }) => {
         if (!wrapper) return;
 
         const onWheel = (e: WheelEvent) => {
-            // Always prevent default to stop page scroll when over canvas
             e.preventDefault();
             e.stopPropagation();
 
@@ -65,6 +138,9 @@ const Mermaid: React.FC<MermaidProps> = ({ chart }) => {
         dragRef.current.isDragging = true;
         dragRef.current.startX = e.clientX - transformRef.current.x;
         dragRef.current.startY = e.clientY - transformRef.current.y;
+        if (wrapperRef.current) {
+            wrapperRef.current.style.cursor = 'grabbing';
+        }
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
@@ -79,12 +155,15 @@ const Mermaid: React.FC<MermaidProps> = ({ chart }) => {
 
     const handleMouseUp = () => {
         dragRef.current.isDragging = false;
+        if (wrapperRef.current) {
+            wrapperRef.current.style.cursor = 'grab';
+        }
     };
 
     return (
         <div
             ref={wrapperRef}
-            className="mermaid-wrapper"
+            className={`mermaid-wrapper ${className || ''}`}
             style={{
                 overflow: 'hidden',
                 border: '1px solid #ccc',
@@ -92,7 +171,8 @@ const Mermaid: React.FC<MermaidProps> = ({ chart }) => {
                 position: 'relative',
                 cursor: 'grab',
                 backgroundColor: '#f9f9f9',
-                marginBottom: '20px'
+                marginBottom: '20px',
+                ...style
             }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}

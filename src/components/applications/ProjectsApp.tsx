@@ -62,18 +62,10 @@ const ProjectsApp: React.FC<ProjectsAppProps> = (props) => {
             onInteract={props.onInteract}
             minimizeWindow={props.onMinimize}
             bottomLeftText={'© Copyright 2025 Akshit Sharma'}
+            onToggleSidebar={isMobile ? toggleSidebar : undefined}
         >
             <div style={styles.container}>
-                {/* Hamburger Menu Button (Mobile Only) */}
-                {isMobile && (
-                    <button
-                        onClick={toggleSidebar}
-                        style={styles.hamburger}
-                        aria-label="Toggle navigation"
-                    >
-                        ☰
-                    </button>
-                )}
+                {/* Hamburger Menu Button (Mobile Only) - Moved to Window TitleBar */}
 
                 <div style={Object.assign({}, styles.sidebar,
                     isMobile && !sidebarOpen && { transform: 'translateX(-100%)', position: 'absolute', height: '100%', zIndex: 1000 },
@@ -158,26 +150,6 @@ const styles: StyleSheetCSS = {
         overflowY: 'auto',
         padding: '0',
         backgroundColor: '#fff',
-    },
-    hamburger: {
-        position: 'absolute',
-        top: 8,
-        left: 8,
-        zIndex: 1001,
-        fontSize: 24,
-        background: '#f0f0f0',
-        border: '1px solid #ccc',
-        borderRadius: 4,
-        padding: '4px 8px',
-        cursor: 'pointer',
-    },
-    closeButton: {
-        position: 'absolute',
-        top: 8,
-        right: 8,
-        fontSize: 24,
-        background: 'transparent',
-        border: 'none',
         cursor: 'pointer',
     }
 };

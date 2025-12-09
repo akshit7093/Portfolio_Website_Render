@@ -25,7 +25,7 @@ const OregonTrailApp: React.FC<OregonTrailAppProps> = (props) => {
             onWidthChange={setWidth}
             onHeightChange={setHeight}
         >
-            <DosPlayer width={isMobile ? '100%' : width} height={isMobile ? '100%' : height} bundleUrl="trail.jsdos" />
+            <DosPlayer width={isMobile ? '100%' : width - 12} height={isMobile ? '100%' : height - 70} bundleUrl="trail.jsdos" />
         </Window>
     );
 };
